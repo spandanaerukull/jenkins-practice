@@ -7,8 +7,8 @@ pipeline { // Define a Jenkins pipeline
         COURSE = 'jenkins'
     }
     options { // Define options for the pipeline, these options include setting a timeout for the pipeline execution to prevent it from running indefinitely and disabling concurrent builds to ensure that only one instance of the pipeline runs at a time, which can help avoid conflicts and resource contention.
-        timeout(time: 30, unit: 'MINUTES') 
-        disableConcurrentBuilds()
+        timeout(time: 30, unit: 'MINUTES')  // this option sets a timeout for the pipeline execution, if the pipeline takes longer than the specified time (30 minutes in this case), it will be automatically aborted to prevent it from running indefinitely and consuming resources unnecessarily.
+        disableConcurrentBuilds() // this option disables concurrent builds, ensuring that only one instance of the pipeline runs at a time, which can help avoid conflicts and resource contention.
     }
     parameters { // Define parameters for user input when triggering the pipeline, these parameters allow users to provide input values that can be used in the pipeline execution, such as specifying a person's name, providing a biography, toggling a boolean value, making a choice from a list of options, or entering a password. These parameters can be accessed in the pipeline using the `params` object, for example `params.PERSON` to get the value of the PERSON parameter.
         string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
@@ -21,12 +21,12 @@ pipeline { // Define a Jenkins pipeline
     stages {
         stage('Build') {
             steps {
-                script{
-                    sh """
+                script{ // Define the steps to execute in the Build stage, in this case we are using a script block to execute some shell commands, we are printing a message to indicate that we are building, then we are sleeping for 10 seconds to simulate a build process, after that we are printing the environment variables using the env command and finally we are printing a personalized message using the input parameter PERSON.
+                    sh """ 
                         echo "Hello Build"
                         sleep 10
-                        env
-                        echo "Hello ${params.PERSON}"
+                        env 
+                        echo "Hello ${params.PERSON}" 
                     """
                 }
             }
@@ -39,7 +39,7 @@ pipeline { // Define a Jenkins pipeline
             }
         }
         stage('Deploy') { // Define the Deploy stage, this stage includes an input step that prompts the user for confirmation before proceeding with the deployment. The input step includes a message asking if we should continue, an OK button with a custom label, and specifies that only certain users (alice and bob) are allowed to submit the input. Additionally, it defines a parameter for user input, allowing the user to specify a person's name that will be used in the deployment steps.
-            input {
+            input { // Define an input step that prompts the user for confirmation before proceeding with the deployment, this is useful to ensure that the deployment is intentional and to allow for any necessary checks or approvals before deploying to production. The input step includes a message asking if we should continue, an OK button with a custom label, and specifies that only certain users (alice and bob) are allowed to submit the input. Additionally, it defines a parameter for user input, allowing the user to specify a person's name that will be used in the deployment steps.
                 message "Should we continue?"
                 ok "Yes, we should."
                 submitter "alice,bob"
@@ -61,7 +61,7 @@ pipeline { // Define a Jenkins pipeline
     post { 
         always {  // this block will always execute regardless of the build result, it is used to perform cleanup actions or any necessary steps that should be executed after every build, in this case we are deleting the workspace directory to clean up any files or artifacts generated during the build process and also printing a message to indicate that this block has been executed.
             echo 'I will always say Hello again!'
-            deleteDir()
+            deleteDir() // this step is used to delete the workspace directory, which is the directory where Jenkins checks out the source code and performs the build steps. This is a common practice to clean up any files or artifacts generated during the build process and ensure that each build starts with a clean workspace.
         }
         success {  // this block will execute only if the build is successful, it is used to perform actions that should only be executed when the build succeeds, in this case we are printing a message to indicate that the build was successful.
             echo 'Hello Success'
