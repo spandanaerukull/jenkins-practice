@@ -38,7 +38,7 @@ pipeline { // Define a Jenkins pipeline
                 }
             }
         }
-        stage('Deploy') {
+        stage('Deploy') { // Define the Deploy stage, this stage includes an input step that prompts the user for confirmation before proceeding with the deployment. The input step includes a message asking if we should continue, an OK button with a custom label, and specifies that only certain users (alice and bob) are allowed to submit the input. Additionally, it defines a parameter for user input, allowing the user to specify a person's name that will be used in the deployment steps.
             input {
                 message "Should we continue?"
                 ok "Yes, we should."
@@ -47,7 +47,7 @@ pipeline { // Define a Jenkins pipeline
                     string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
                 }
             }
-            steps {
+            steps { // Define the steps to execute in the Deploy stage, in this case we are using a script block to execute some shell commands, we are printing a message to indicate that we are deploying and also using the input parameter PERSON to print a personalized message.
                 script{
                     echo "Hello, ${PERSON}, nice to meet you."
                     
